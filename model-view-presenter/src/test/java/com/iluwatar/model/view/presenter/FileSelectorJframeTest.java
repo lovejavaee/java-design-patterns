@@ -1,5 +1,5 @@
 /*
- * This project is licensed under the MIT license. Module model-view-presenter is using ZK framework licensed under LGPL (see lgpl-3.0.txt).
+ * This project is licensed under the MIT license. Module model-view-viewmodel is using ZK framework licensed under LGPL (see lgpl-3.0.txt).
  *
  * The MIT License
  * Copyright © 2014-2022 Ilkka Seppälä
@@ -27,26 +27,19 @@ package com.iluwatar.model.view.presenter;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.awt.event.ActionEvent;
-
 import org.junit.jupiter.api.Test;
 
-/**
- * Date: 01/29/23 - 6:00 PM
- *
- * @author Rahul Raj
- */
+/** FileSelectorJframeTest */
 class FileSelectorJframeTest {
-    
-    /**
-     * Tests if the jframe action event is triggered without any exception.
-     */
-    @Test
-    void testActionEvent() {
-      assertDoesNotThrow(() ->{
-        FileSelectorJframe jFrame = new FileSelectorJframe();
-        ActionEvent action = new ActionEvent("dummy", 1, "dummy");
-        jFrame.actionPerformed(action);
-      });
-    }
 
+  /** Tests if the jframe action event is triggered without any exception. */
+  @Test
+  void testActionEvent() {
+    assertDoesNotThrow(
+        () -> {
+          FileSelectorJframe jFrame = new FileSelectorJframe();
+          ActionEvent action = new ActionEvent("dummy", 1, "dummy");
+          jFrame.actionPerformed(action);
+        });
+  }
 }

@@ -28,6 +28,7 @@ import com.iluwatar.event.sourcing.event.AccountCreateEvent;
 import com.iluwatar.event.sourcing.event.MoneyDepositEvent;
 import com.iluwatar.event.sourcing.event.MoneyTransferEvent;
 import com.iluwatar.event.sourcing.processor.DomainEventProcessor;
+import com.iluwatar.event.sourcing.processor.JsonFileJournal;
 import com.iluwatar.event.sourcing.state.AccountAggregate;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -42,23 +43,20 @@ import lombok.extern.slf4j.Slf4j;
  * transactional data, and maintain full audit trails and history that can enable compensating
  * actions.
  *
- * <p>This App class is an example usage of an Event Sourcing pattern. As an example, two bank accounts
- * are created, then some money deposit and transfer actions are taken, so a new state of accounts is
- * created. At that point, state is cleared in order to represent a system shut-down. After the shut-down,
- * system state is recovered by re-creating the past events from event journals. Then state is
- * printed so a user can view the last state is same with the state before a system shut-down.
- *
- * <p>Created by Serdar Hamzaogullari on 06.08.2017.
+ * <p>This App class is an example usage of an Event Sourcing pattern. As an example, two bank
+ * accounts are created, then some money deposit and transfer actions are taken, so a new state of
+ * accounts is created. At that point, state is cleared in order to represent a system shut-down.
+ * After the shut-down, system state is recovered by re-creating the past events from event
+ * journals. Then state is printed so a user can view the last state is same with the state before a
+ * system shut-down.
  */
 @Slf4j
 public class App {
-  /**
-   * The constant ACCOUNT OF DAENERYS.
-   */
+
+  /** The constant ACCOUNT OF DAENERYS. */
   public static final int ACCOUNT_OF_DAENERYS = 1;
-  /**
-   * The constant ACCOUNT OF JON.
-   */
+
+  /** The constant ACCOUNT OF JON. */
   public static final int ACCOUNT_OF_JON = 2;
 
   /**
@@ -68,31 +66,31 @@ public class App {
    */
   public static void main(String[] args) {
 
-    var eventProcessor = new DomainEventProcessor();
-
+    var eventProcessor = new DomainEventProcessor(new JsonFileJournal());
 
     LOGGER.info("Running the system first time............");
     eventProcessor.reset();
 
     LOGGER.info("Creating the accounts............");
 
-    eventProcessor.process(new AccountCreateEvent(
-        0, new Date().getTime(), ACCOUNT_OF_DAENERYS, "Daenerys Targaryen"));
+    eventProcessor.process(
+        new AccountCreateEvent(0, new Date().getTime(), ACCOUNT_OF_DAENERYS, "Daenerys Targaryen"));
 
-    eventProcessor.process(new AccountCreateEvent(
-        1, new Date().getTime(), ACCOUNT_OF_JON, "Jon Snow"));
+    eventProcessor.process(
+        new AccountCreateEvent(1, new Date().getTime(), ACCOUNT_OF_JON, "Jon Snow"));
 
     LOGGER.info("Do some money operations............");
 
-    eventProcessor.process(new MoneyDepositEvent(
-        2, new Date().getTime(), ACCOUNT_OF_DAENERYS, new BigDecimal("100000")));
+    eventProcessor.process(
+        new MoneyDepositEvent(
+            2, new Date().getTime(), ACCOUNT_OF_DAENERYS, new BigDecimal("100000")));
 
-    eventProcessor.process(new MoneyDepositEvent(
-        3, new Date().getTime(), ACCOUNT_OF_JON, new BigDecimal("100")));
+    eventProcessor.process(
+        new MoneyDepositEvent(3, new Date().getTime(), ACCOUNT_OF_JON, new BigDecimal("100")));
 
-    eventProcessor.process(new MoneyTransferEvent(
-        4, new Date().getTime(), new BigDecimal("10000"), ACCOUNT_OF_DAENERYS,
-        ACCOUNT_OF_JON));
+    eventProcessor.process(
+        new MoneyTransferEvent(
+            4, new Date().getTime(), new BigDecimal("10000"), ACCOUNT_OF_DAENERYS, ACCOUNT_OF_JON));
 
     LOGGER.info("...............State:............");
     LOGGER.info(AccountAggregate.getAccount(ACCOUNT_OF_DAENERYS).toString());
@@ -103,13 +101,11 @@ public class App {
 
     LOGGER.info("Recover the system by the events in journal file............");
 
-    eventProcessor = new DomainEventProcessor();
+    eventProcessor = new DomainEventProcessor(new JsonFileJournal());
     eventProcessor.recover();
 
     LOGGER.info("...............Recovered State:............");
     LOGGER.info(AccountAggregate.getAccount(ACCOUNT_OF_DAENERYS).toString());
     LOGGER.info(AccountAggregate.getAccount(ACCOUNT_OF_JON).toString());
   }
-
-
 }

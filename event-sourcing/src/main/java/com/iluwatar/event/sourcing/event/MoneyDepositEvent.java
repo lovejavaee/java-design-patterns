@@ -24,6 +24,8 @@
  */
 package com.iluwatar.event.sourcing.event;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.iluwatar.event.sourcing.state.AccountAggregate;
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -45,12 +47,17 @@ public class MoneyDepositEvent extends DomainEvent {
   /**
    * Instantiates a new Money deposit event.
    *
-   * @param sequenceId  the sequence id
+   * @param sequenceId the sequence id
    * @param createdTime the created time
-   * @param accountNo   the account no
-   * @param money       the money
+   * @param accountNo the account no
+   * @param money the money
    */
-  public MoneyDepositEvent(long sequenceId, long createdTime, int accountNo, BigDecimal money) {
+  @JsonCreator
+  public MoneyDepositEvent(
+      @JsonProperty("sequenceId") long sequenceId,
+      @JsonProperty("createdTime") long createdTime,
+      @JsonProperty("accountNo") int accountNo,
+      @JsonProperty("money") BigDecimal money) {
     super(sequenceId, createdTime, "MoneyDepositEvent");
     this.money = money;
     this.accountNo = accountNo;
@@ -58,8 +65,9 @@ public class MoneyDepositEvent extends DomainEvent {
 
   @Override
   public void process() {
-    var account = Optional.ofNullable(AccountAggregate.getAccount(accountNo))
-        .orElseThrow(() -> new RuntimeException("Account not found"));
+    var account =
+        Optional.ofNullable(AccountAggregate.getAccount(accountNo))
+            .orElseThrow(() -> new RuntimeException("Account not found"));
     account.handleEvent(this);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * This project is licensed under the MIT license. Module intercepting-filter is using ZK framework licensed under LGPL (see lgpl-3.0.txt).
+ * This project is licensed under the MIT license. Module model-view-viewmodel is using ZK framework licensed under LGPL (see lgpl-3.0.txt).
  *
  * The MIT License
  * Copyright © 2014-2022 Ilkka Seppälä
@@ -25,22 +25,18 @@
 package com.iluwatar.intercepting.filter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * Date: 01/29/23 - 1:33 PM
- *
- * @author Rahul Raj
- */
+/** TargetTest */
 class TargetTest {
-    
-    @Test
-    void testSetup(){
-        final var target = new Target();
-        assertEquals(target.getSize().getWidth(), Double.valueOf(640));
-        assertEquals(target.getSize().getHeight(), Double.valueOf(480));
-        assertEquals(true,target.isVisible());
-    }
+
+  @Test
+  void testSetup() {
+    final var target = new Target();
+    assertEquals(target.getSize().getWidth(), Double.valueOf(640));
+    assertEquals(target.getSize().getHeight(), Double.valueOf(480));
+    assertTrue(target.isVisible());
+  }
 }
